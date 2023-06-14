@@ -30,9 +30,7 @@ backend:
   database:
     client: better-sqlite3
     connection: ':memory:'
-  cache:
-    store: memory
-  # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
+
 
 integrations:
   github:
@@ -65,12 +63,12 @@ techdocs:
 
 auth:
   # see https://backstage.io/docs/auth/ to learn about auth providers
-  environment: backstage
+  environment: development
   providers:
     github:
       development:
-        clientId: 'afdd113206a29061da4e95ec78b0f8b0a53e5a1e' #${AUTH_GITHUB_CLIENT_ID}''
-        clientSecret: 'afdd113206a29061da4e95ec78b0f8b0a53e5a1e' # ${AUTH_GITHUB_CLIENT_SECRET}
+        clientId: 'cc9bb85eda66175bbb8a' #${AUTH_GITHUB_CLIENT_ID}''
+        clientSecret: 'c453e2fb6387291e2a6aef35ce708da99c21ad11' # ${AUTH_GITHUB_CLIENT_SECRET}
 
 scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
