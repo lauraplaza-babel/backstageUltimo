@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgresdb-persistent-volumev1
+  namespace: backstagev1
+  labels:
+    type: local
+    app: postgresdb
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  # Specify the path to persistent the volumes  
+  hostPath:
+    path: "/data/db"
+
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-persistent-volume-claimv1
+  namespace: backstagev1
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi

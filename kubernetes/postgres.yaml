@@ -1,0 +1,92 @@
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgresdb-persistent-volume
+  namespace: backstagev1
+  labels:
+    type: local
+    app: postgresdb
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  # Specify the path to persistent the volumes  
+  hostPath:
+    path: "/data/db"
+
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-persistent-volume-claimv1
+  namespace: backstagev1
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: backstagev1
+  name: db-secret-credentials
+  labels:
+    app: postgresdb
+data:
+  POSTGRES_DB: testDB
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresdb
+  namespace: backstagev1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresdb
+  template:
+    metadata:
+      labels:
+        app: postgresdb
+    spec:
+      containers:
+        - name: postgresdb
+          image: postgres
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: db-secret-credentials
+          volumeMounts:
+            - mountPath: /var/lib/postgres/data
+              name: db-data
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: db-persistent-volume-claimv1
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: backstagev1
+  name: postgresdb
+  labels:
+    app: postgresdb
+spec:
+  type: NodePort
+  ports:
+    - port: 5432
+  selector:
+    app: postgresdb
